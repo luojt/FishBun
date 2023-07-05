@@ -16,6 +16,7 @@ import com.sangcomz.fishbun.R
  */
 class PermissionCheck(private val context: Context) {
     private fun checkPermission(permissionList: List<String>, requestCode: Int): Boolean {
+        return true
         if (context !is Activity) return false
 
         val needRequestPermissionList = permissionList
@@ -40,37 +41,18 @@ class PermissionCheck(private val context: Context) {
         }
     }
 
-    fun checkStoragePermission(requestCode: Int): Boolean {
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                    Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> {
-                checkStoragePermissionUnderAPI33(requestCode)
-            }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
-                checkStoragePermissionOrHigherAPI33(requestCode)
-            }
-            else -> true
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
-    fun checkStoragePermissionUnderAPI33(requestCode: Int): Boolean {
+    fun checkStoragePermission(requestCode: Int): Boolean {
+        return true
         return checkPermission(
             arrayListOf(READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE),
             requestCode
         )
     }
 
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    fun checkStoragePermissionOrHigherAPI33(requestCode: Int): Boolean {
-        return checkPermission(
-            arrayListOf(READ_MEDIA_IMAGES),
-            requestCode
-        )
-    }
-
     @TargetApi(Build.VERSION_CODES.M)
     fun checkCameraPermission(requestCode: Int): Boolean {
+        return true
         try {
             val info = context.packageManager.getPackageInfo(
                 context.packageName,
@@ -88,6 +70,10 @@ class PermissionCheck(private val context: Context) {
             e.printStackTrace()
             return false
         }
+    }
+
+    fun showPermissionDialog() {
+        Toast.makeText(context, R.string.msg_permission, Toast.LENGTH_SHORT).show()
     }
 
 }
